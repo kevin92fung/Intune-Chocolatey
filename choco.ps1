@@ -1,14 +1,3 @@
-<#>
-Skriptet installerar applikationer med chocolatey. Finns Chocolatey inte på datorn installeras det innan 
-den valda applikationen installeras. Packetera skriptet som win32App för att använda tillsammans med intune.
-
-För att installera applikationer med detta skript använder man install och uninstall commands.
-Install
-powershell.exe -ex bypass .\choco_install.ps1 <Applikationens namn>
-Uninstall
-powershell.exe -ex bypass .\choco_install.ps1 <Applikationens namn> uninstall
-</#>
-
 PARAM (
 [Parameter(Mandatory=$true, Position=0)]
     [string]$package,
@@ -18,28 +7,27 @@ PARAM (
 
 $chocoInstallPath = "C:\ProgramData\chocolatey\bin\choco.exe"
 $libPath = "C:\ProgramData\Chocolatey\lib"
-#installerar Chocolatey om Chocolatey inte är installerad, updaterar ifall Chocolatey är installerad
+
+#Step 1, checks if Chocolatey is installed. Installs if not installed and updates if installed.
 
 if (-Not (Test-Path $chocoInstallPath)) {
     try {
-        # Försök installera Chocolatey
         Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     }
     catch {
-        Throw "Installationen misslyckades"
+        Throw "Install failed"
     }
 }
 else {
     try {
-        # Försök att uppdatera Chocolatey
         Invoke-Expression "cmd.exe /c $chocoInstallPath upgrade chocolatey -y" -ErrorAction Stop
     }
     catch {
-        Throw "Uppdateringen misslyckades"
+        Throw "Install failed"
     }
 }
 
-#installation av applikation
+#Step 2, Install and uninstall of the selected package
 if ($uninstall -eq "uninstall") {
     try {
         Invoke-Expression "cmd.exe /c $chocoInstallPath uninstall $package -y" -ErrorAction Stop
@@ -49,7 +37,7 @@ if ($uninstall -eq "uninstall") {
             }
     }
     catch {
-        Throw "Avinstallationen misslyckades"
+        Throw "Uninstall failed"
     }
 }
 else {
@@ -57,6 +45,6 @@ else {
         Invoke-Expression "cmd.exe /c $chocoInstallPath install $package -y" -ErrorAction Stop
     }
     catch {
-        Throw "Installationen misslyckades"
+        Throw "Install failed"
     }
 }
