@@ -1,6 +1,6 @@
 ### **Information**  
 
-This script makes it possible to deploy applications using Chocolatey packages. The script runs in two steps: first, it checks if Chocolatey needs to be installed or updated, and then it installs the package.  
+This script makes it possible to deploy applications using Chocolatey packages. The script runs in two steps: first, it checks if Chocolatey needs to be installed or updated, in step two it installs or uninstalls the package.  
 
 The same prepared file is reusable, and the package to be installed is chosen from the install command.  
 
@@ -26,7 +26,7 @@ Follow this guide to prepare the file: [Microsoft-Win32-Content-Prep-Tool](https
   ```  
 - **Uninstall command:**  
   ```powershell
-  powershell.exe -ExecutionPolicy Bypass -File .\install.ps1 <package>
+  powershell.exe -ExecutionPolicy Bypass -File .\install.ps1 <package> uninstall
   ```  
 Find available packages here: [Chocolatey Community Packages](https://community.chocolatey.org/packages).  
 
